@@ -6,12 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Miagao</title>
-  <meta name="description" content="Awesome blog about Software Development, Operations Research, Education and Behavioral Finance.
-">
+  <title>MongoDB on Amazon ec2 with SSD</title>
+  <meta name="description" content="We are using the new Amazon ec2 (h1.4xlarge) SSD boosted Machines to test and maybe production this week.The copy velocity and the full resync is amazing. Re...">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://imiagao.github.io/">
+  <link rel="canonical" href="http://imiagao.github.io/2012/07/27/mongodb-on-amazon-ec2-with-ssd.html">
   <link rel="alternate" type="application/rss+xml" title="Miagao" href="http://imiagao.github.io/feed.xml" />
 </head>
 
@@ -55,119 +54,16 @@
 
     <div class="page-content">
       <div class="wrapper">
-        <div class="home">
+        <div class="post">
 
-  <h1 class="page-heading">Posts</h1>
+  <header class="post-header">
+    <h1 class="post-title">MongoDB on Amazon ec2 with SSD</h1>
+    <p class="post-meta">Jul 27, 2012 • Luciano Issoe</p>
+  </header>
 
-  <ul class="post-list">
-    
-      <li>
-        <span class="post-meta">Aug 5, 2015</span>
-
-        <h2>
-          <a class="post-link" href="/jekyll/update/2015/08/05/welcome-to-jekyll.html">Welcome to Jekyll!</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jan 23, 2013</span>
-
-        <h2>
-          <a class="post-link" href="/2013/01/23/truncate-large-collections-based-on.html">truncate large collections based on the creation time</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Dec 14, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/12/14/monitor-anything-on-serverdensity.html">Monitor Anything on ServerDensity</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 27, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/11/27/separate-large-collections-in-different.html">Separate large collections in different Replicas ! </a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Oct 31, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/10/31/how-to-calculate-number-of-heroku-web.html">How to calculate the number of Heroku web Dynos</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 9, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/08/09/opscode-chef-howto-make-chef-client-work.html">Opscode Chef -- howto make chef-client work</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 8, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/08/08/mongodb-ec2-ssd-x-iop-provisioned-x-ebs.html">MongoDB EC2 SSD x IOP provisioned x EBS optimized instance comparison</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 4, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/08/04/how-to-add-second-mongoid-3-session-in.html">How to add a second Mongoid 3 session in TDDIUM</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 3, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/08/03/new-iop-provisioned-ebs-volumes-with.html">New IOP Provisioned EBS Volumes -- with a live MongoDB</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jul 27, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/07/27/mongodb-on-amazon-ec2-with-ssd.html">MongoDB on Amazon ec2 with SSD</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jul 19, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/07/19/mongodb-journaling.html"></a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jul 19, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/07/19/mongoid-2.html"></a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jul 19, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/07/19/mongodb-production-notes-for-self-how.html"></a>
-        </h2>
-      </li>
-    
-  </ul>
-
-  <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
+  <article class="post-content">
+    We are using the new Amazon ec2 (h1.4xlarge) SSD boosted Machines to test and maybe production this week.<br /><span style="background-color: white;"><br /></span><br /><span style="background-color: white;">The copy velocity and the full resync is amazing. Renaming fields went a lot faster, but not as much as we´d like.</span><br /><br />M<span style="background-color: white;">ap-reduce of about 20 million documents took less than 10 minutes.&nbsp;</span><br /><br />Renaming a field on 10 Million documents took 20 minutes. Renaming on 320 Million, however, took more than 19 hours....<br /><br />Indexing is still a problem because mongodb uses only one core to do everything and can take as long as a common machine with attached EBS.<br /><br />That said, in real life situations the %lock on the DB goes down to half of the normal and the background flush avg is less than 200 ms. &nbsp;I think that on the lung run it will be great once the paging starts to push the limits on our RAM.<br /><br /><strike>I´m eager to put it into production to see how it goes.</strike> They are already in production since last week.<br />Our app have never been faster, the paging are about 50/sec, but are almost unnoticed. &nbsp;We are expecting to reach 10 MM impressions this Sunday!<br /><br />A few gotchas: we cannot save them as part of an AMI, so everytime you have to rebuild it, you have to make it with a full resync. And as of today Amazon only allows you to have two of those babies, so if you want more, you have to ask them...<br /><br /><br />Here´s how it compares in terms of %lock:<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-kvRpRWecmHM/UBvg4_ftnZI/AAAAAAAAAos/JnKLOQ_5IeA/s1600/Screen+Shot+2012-08-03+at+11.32.46+AM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="273" src="http://4.bp.blogspot.com/-kvRpRWecmHM/UBvg4_ftnZI/AAAAAAAAAos/JnKLOQ_5IeA/s640/Screen+Shot+2012-08-03+at+11.32.46+AM.png" width="640" /></a></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: left;">And here´s the SWEET IOP measures at the primary:</div><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-zemf0oX3FV8/UBvhZe2scrI/AAAAAAAAAo0/U2gJOz5qCek/s1600/Screen+Shot+2012-08-03+at+11.35.27+AM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="203" src="http://3.bp.blogspot.com/-zemf0oX3FV8/UBvhZe2scrI/AAAAAAAAAo0/U2gJOz5qCek/s320/Screen+Shot+2012-08-03+at+11.35.27+AM.png" width="320" /></a></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">This weekend, I´ll put the newer iop provisioned EBS (http://aws.typepad.com/aws/2012/08/fast-forward-provisioned-iops-ebs.html) &nbsp;to work on a secondary, as the older ones are suffering at 50% lock and they could get into a state where they will not be able to catch up the primary.</div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><br /><br /><br />
+  </article>
 
 </div>
 

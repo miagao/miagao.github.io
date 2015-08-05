@@ -7,11 +7,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Miagao</title>
-  <meta name="description" content="Awesome blog about Software Development, Operations Research, Education and Behavioral Finance.
-">
+  <meta name="description" content="Mongodb -- Production notes to self -- How we support 10 million hits a day at 100 ms avg time.Performance Tuning and Operation gotchas.-- blockdev (!!!)&nbs...">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://imiagao.github.io/">
+  <link rel="canonical" href="http://imiagao.github.io/2012/07/19/mongodb-production-notes-for-self-how.html">
   <link rel="alternate" type="application/rss+xml" title="Miagao" href="http://imiagao.github.io/feed.xml" />
 </head>
 
@@ -55,119 +54,16 @@
 
     <div class="page-content">
       <div class="wrapper">
-        <div class="home">
+        <div class="post">
 
-  <h1 class="page-heading">Posts</h1>
+  <header class="post-header">
+    <h1 class="post-title"></h1>
+    <p class="post-meta">Jul 19, 2012 • Luciano Issoe</p>
+  </header>
 
-  <ul class="post-list">
-    
-      <li>
-        <span class="post-meta">Aug 5, 2015</span>
-
-        <h2>
-          <a class="post-link" href="/jekyll/update/2015/08/05/welcome-to-jekyll.html">Welcome to Jekyll!</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jan 23, 2013</span>
-
-        <h2>
-          <a class="post-link" href="/2013/01/23/truncate-large-collections-based-on.html">truncate large collections based on the creation time</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Dec 14, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/12/14/monitor-anything-on-serverdensity.html">Monitor Anything on ServerDensity</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 27, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/11/27/separate-large-collections-in-different.html">Separate large collections in different Replicas ! </a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Oct 31, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/10/31/how-to-calculate-number-of-heroku-web.html">How to calculate the number of Heroku web Dynos</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 9, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/08/09/opscode-chef-howto-make-chef-client-work.html">Opscode Chef -- howto make chef-client work</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 8, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/08/08/mongodb-ec2-ssd-x-iop-provisioned-x-ebs.html">MongoDB EC2 SSD x IOP provisioned x EBS optimized instance comparison</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 4, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/08/04/how-to-add-second-mongoid-3-session-in.html">How to add a second Mongoid 3 session in TDDIUM</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 3, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/08/03/new-iop-provisioned-ebs-volumes-with.html">New IOP Provisioned EBS Volumes -- with a live MongoDB</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jul 27, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/07/27/mongodb-on-amazon-ec2-with-ssd.html">MongoDB on Amazon ec2 with SSD</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jul 19, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/07/19/mongodb-journaling.html"></a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jul 19, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/07/19/mongoid-2.html"></a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jul 19, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/07/19/mongodb-production-notes-for-self-how.html"></a>
-        </h2>
-      </li>
-    
-  </ul>
-
-  <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
+  <article class="post-content">
+    Mongodb -- Production notes to self -- How we support 10 million hits a day at 100 ms avg time.<br /><br />Performance Tuning and Operation gotchas.<br /><br />-- blockdev (!!!)&nbsp; ( blockdev --setra 32 /dev/md0 )<br />single most important parameter. Adjust it to suit your needs<br /><br />&nbsp;&nbsp; Why??? =&gt; imagine that every time you need to query a document that is not yet on RAM you load a million times more documents in advance. So you freeze your reads while doing that and load this huge amount of data for never to use it.&nbsp; <br /><br />&nbsp;&nbsp; How to adjust it ??? =&gt; determine your average document size and the read pattern<br /><br /><br />A good guess should be a low number if your documents are small and the access pattern is random and larger otherwise.<br />A good number here will reflect on the resident memory, that in the long run should approach the maximum phisical memory&nbsp; available. I&nbsp; have dramatically improved our performance and maximum throughput changing the default read ahead from 8196 to 32 in my 8 disks RAID10 array.<br /><br />There´s a great post explaining it : http://www.kchodorow.com/blog/2012/05/10/thursday-5-diagnosing-high-readahead/<br /><br />-- vm.dirty_background_ratio=5<br />start background paging as early as possible <br /><br />-- vm.dirty_ratio=90<br />you should not reach this threshold, for it freezes the database.<br /><br />-- vm.swapiness=0<br />I don't want to ever swap, so I set it to 0.<br /><br />-- vm.page-cluster = 0<br />the size of the cart on which the vm carries the pages around in powers of 2, =&gt;&nbsp; 0 means 1, 1 means 2 and so on.&nbsp; <br /><br />Monitoring: MMS, Serverdensity, page faults and %lock.<br /><br />-- page faults =&gt; how much your mongodb is going to disk. <br />-- %lock =&gt; the percentage of time spent in lock =&gt; it represents how long a statement is waiting for something to be read or to be written. <br /><br /><br />Querying patterns:<br /><br />If you need to query for a large dataset, try to limit using an index, say "created_at:-1" and query for the most used documents.<br /><br />In my experience, the load of the documents can cost a lot in a fresh restarted database. So, if you are running a ReplicaSet ( and you must) and you must load a lot of documents at once, try to preload them before promoting it to primary, so the indexes of them all all already loaded into memory before it starts to be hammered. <br /><br /><br />Aggregation:<br /><br />If you need aggregation or a rare usage pattern, try to use a set of secondaries with another set of indexes... Or wait until new Aggregation Framework in&nbsp; 2.2 and see if its OK for you.<br /><br /><br /><br /><br /><br />
+  </article>
 
 </div>
 

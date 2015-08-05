@@ -6,12 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Miagao</title>
-  <meta name="description" content="Awesome blog about Software Development, Operations Research, Education and Behavioral Finance.
-">
+  <title>How to add a second Mongoid 3 session in TDDIUM</title>
+  <meta name="description" content="Folks who like Heroku and their addons certainly came across tddium, who promises to keep the tedium out of TDD ...lol.. Well, we just upgraded to Mongoid 3 ...">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://imiagao.github.io/">
+  <link rel="canonical" href="http://imiagao.github.io/2012/08/04/how-to-add-second-mongoid-3-session-in.html">
   <link rel="alternate" type="application/rss+xml" title="Miagao" href="http://imiagao.github.io/feed.xml" />
 </head>
 
@@ -55,119 +54,16 @@
 
     <div class="page-content">
       <div class="wrapper">
-        <div class="home">
+        <div class="post">
 
-  <h1 class="page-heading">Posts</h1>
+  <header class="post-header">
+    <h1 class="post-title">How to add a second Mongoid 3 session in TDDIUM</h1>
+    <p class="post-meta">Aug 4, 2012 • Luciano Issoe</p>
+  </header>
 
-  <ul class="post-list">
-    
-      <li>
-        <span class="post-meta">Aug 5, 2015</span>
-
-        <h2>
-          <a class="post-link" href="/jekyll/update/2015/08/05/welcome-to-jekyll.html">Welcome to Jekyll!</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jan 23, 2013</span>
-
-        <h2>
-          <a class="post-link" href="/2013/01/23/truncate-large-collections-based-on.html">truncate large collections based on the creation time</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Dec 14, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/12/14/monitor-anything-on-serverdensity.html">Monitor Anything on ServerDensity</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 27, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/11/27/separate-large-collections-in-different.html">Separate large collections in different Replicas ! </a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Oct 31, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/10/31/how-to-calculate-number-of-heroku-web.html">How to calculate the number of Heroku web Dynos</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 9, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/08/09/opscode-chef-howto-make-chef-client-work.html">Opscode Chef -- howto make chef-client work</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 8, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/08/08/mongodb-ec2-ssd-x-iop-provisioned-x-ebs.html">MongoDB EC2 SSD x IOP provisioned x EBS optimized instance comparison</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 4, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/08/04/how-to-add-second-mongoid-3-session-in.html">How to add a second Mongoid 3 session in TDDIUM</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 3, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/08/03/new-iop-provisioned-ebs-volumes-with.html">New IOP Provisioned EBS Volumes -- with a live MongoDB</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jul 27, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/07/27/mongodb-on-amazon-ec2-with-ssd.html">MongoDB on Amazon ec2 with SSD</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jul 19, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/07/19/mongodb-journaling.html"></a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jul 19, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/07/19/mongoid-2.html"></a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jul 19, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/07/19/mongodb-production-notes-for-self-how.html"></a>
-        </h2>
-      </li>
-    
-  </ul>
-
-  <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
+  <article class="post-content">
+    Folks who like Heroku and their addons certainly came across tddium, who promises to keep the tedium out of TDD ...lol.. <br /><br />Well, we just upgraded to Mongoid 3 and one of their usefull features are sessions. So now we can configure all kinds of sessions for all kinds of reasons:<br /><br />We might want to enforce consistency on some features. -- just use a session with consistency: :strong on its configuration.<br /><br />Or we might want our data to be eventually consistent, and have a higher troughput - so we use a consistency: :eventual.<br /><br />Anyway, this post is not about that, but about how to configure tddium to use multiple sessions: <br />I took parts of this post <a href="http://blog.nistu.de/2012/02/08/setting-up-tddium-for-a-rails-project">http://blog.nistu.de/2012/02/08/setting-up-tddium-for-a-rails-project</a> and with a little help from tddium suport, came up with this: <br /><div class="gistLoad" data-id="3259158" id="gist-3259158">Loading ....</div><br /><br />It worked for most of our tests.&nbsp; We'll try and figure it out on Monday the ones that didn't work.<br /><br /><br /><br />** thanks for Moski for his post about posting gist into blogger's dynamic views. <a href="http://http://blog.moski.me/2012/01/gist-with-bloggers-dynamic-views.html">http://blog.moski.me/2012/01/gist-with-bloggers-dynamic-views.html</a>   <script src="https://raw.github.com/moski/gist-Blogger/master/public/gistLoader.js" type="text/javascript"></script>
+  </article>
 
 </div>
 

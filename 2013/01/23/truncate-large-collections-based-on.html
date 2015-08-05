@@ -6,12 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Miagao</title>
-  <meta name="description" content="Awesome blog about Software Development, Operations Research, Education and Behavioral Finance.
-">
+  <title>truncate large collections based on the creation time</title>
+  <meta name="description" content="Sometimes you need to truncate a large collection on MongoDB ( mine is 1.6 billion documents ) on an unindexed field, such as a Mongoid field called created_...">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://imiagao.github.io/">
+  <link rel="canonical" href="http://imiagao.github.io/2013/01/23/truncate-large-collections-based-on.html">
   <link rel="alternate" type="application/rss+xml" title="Miagao" href="http://imiagao.github.io/feed.xml" />
 </head>
 
@@ -55,119 +54,16 @@
 
     <div class="page-content">
       <div class="wrapper">
-        <div class="home">
+        <div class="post">
 
-  <h1 class="page-heading">Posts</h1>
+  <header class="post-header">
+    <h1 class="post-title">truncate large collections based on the creation time</h1>
+    <p class="post-meta">Jan 23, 2013 • Luciano Issoe</p>
+  </header>
 
-  <ul class="post-list">
-    
-      <li>
-        <span class="post-meta">Aug 5, 2015</span>
-
-        <h2>
-          <a class="post-link" href="/jekyll/update/2015/08/05/welcome-to-jekyll.html">Welcome to Jekyll!</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jan 23, 2013</span>
-
-        <h2>
-          <a class="post-link" href="/2013/01/23/truncate-large-collections-based-on.html">truncate large collections based on the creation time</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Dec 14, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/12/14/monitor-anything-on-serverdensity.html">Monitor Anything on ServerDensity</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 27, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/11/27/separate-large-collections-in-different.html">Separate large collections in different Replicas ! </a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Oct 31, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/10/31/how-to-calculate-number-of-heroku-web.html">How to calculate the number of Heroku web Dynos</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 9, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/08/09/opscode-chef-howto-make-chef-client-work.html">Opscode Chef -- howto make chef-client work</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 8, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/08/08/mongodb-ec2-ssd-x-iop-provisioned-x-ebs.html">MongoDB EC2 SSD x IOP provisioned x EBS optimized instance comparison</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 4, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/08/04/how-to-add-second-mongoid-3-session-in.html">How to add a second Mongoid 3 session in TDDIUM</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 3, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/08/03/new-iop-provisioned-ebs-volumes-with.html">New IOP Provisioned EBS Volumes -- with a live MongoDB</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jul 27, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/07/27/mongodb-on-amazon-ec2-with-ssd.html">MongoDB on Amazon ec2 with SSD</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jul 19, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/07/19/mongodb-journaling.html"></a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jul 19, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/07/19/mongoid-2.html"></a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jul 19, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/07/19/mongodb-production-notes-for-self-how.html"></a>
-        </h2>
-      </li>
-    
-  </ul>
-
-  <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
+  <article class="post-content">
+    <br />Sometimes you need to truncate a large collection on MongoDB ( mine is 1.6 billion documents ) on an unindexed field, such as a Mongoid field called created_at. ( OK, TTL collections exists to solve this, but this is a transient solution before we can reindex those 1.6 B documents).<br /><br />This command: db.collection.remove({created_at : {$lt : ISODate("2012-10-09") }}) will trigger a full table scan which can take hours to run before any actual document is deleted. .<br /><br />Object Id to the rescue!!!<br /><br />MongoDB´s ObjectID comes with timestamp for the Object´s creation time inside for free (http://docs.mongodb.org/manual/core/object-id/)<br /><br />So, with a little help from stackoverflow and &nbsp;and Kristina Chodorow (http://www.kchodorow.com/blog/2011/12/20/querying-for-timestamps-using-objectids/) , I created a fake ObjectID from a specified date and then removed over the collection based on the _id field, which is indexed by default, so I remove every _id created before this date!<br /><br />&gt; time = new ISODate("2012-12-09")<br />&gt; ms = time.getTime()<br />&gt; sec = Math.floor(ms/1000)<br />&gt; hex = sec.toString(16)<br />&gt; id_string = hex + "0000000000000000"<br />&gt; my_id = ObjectId(id_string)<br />&gt;<br />&gt; db.my_collection.remove( { _id: { $lt: my_id } } )<br /><br /><br />A cool and indexed query, much faster than the other option!<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br /><br /><br /><br /><br /><br />
+  </article>
 
 </div>
 

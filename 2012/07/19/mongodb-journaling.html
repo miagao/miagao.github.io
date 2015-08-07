@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Miagao</title>
+  <title>MongoDB Journaling</title>
   <meta name="description" content="Mongodb -- journaling.Turn journaling on, the database records ahead 100 ms  worth of data, so presumably it´s safe if the database crashes or hung  unexpect...">
 
   <link rel="stylesheet" href="/css/main.css">
@@ -57,12 +57,13 @@
         <div class="post">
 
   <header class="post-header">
-    <h1 class="post-title"></h1>
+    <h1 class="post-title">MongoDB Journaling</h1>
     <p class="post-meta">Jul 19, 2012 • Luciano Issoe</p>
   </header>
 
   <article class="post-content">
     Mongodb -- journaling.<br /><br /><br />Turn journaling on, the database records ahead 100 ms  worth of data, so presumably it´s safe if the database crashes or hung  unexpectedly, because the operations are replayed from the journal  file.&nbsp; <br /><br />It doubles the VIRTUAL Memory size but in practice, it consumes only 100 ms of data inside your Working Set.<br /><br />The  IO is an issue, but not too much. Benchmarks says it performs about 3%  slower, but the time savings in time are huge in the event of a disk  failure: otherwise you would have to do a full rsync which can cost you  several hours OR have a corrupt database waiting to explode on your face  at anytime.<br /><br /><br />If you create a different partition and for the  journal dir (/var/lib/mongodb/journal/) the journal operation should not  interfere with the writes on your database. <br /><br /><br />
+
   </article>
 
 </div>

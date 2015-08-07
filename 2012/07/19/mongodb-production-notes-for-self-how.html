@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Miagao</title>
+  <title>Production Notes for Self</title>
   <meta name="description" content="Mongodb -- Production notes to self -- How we support 10 million hits a day at 100 ms avg time.Performance Tuning and Operation gotchas.-- blockdev (!!!)&nbs...">
 
   <link rel="stylesheet" href="/css/main.css">
@@ -57,12 +57,13 @@
         <div class="post">
 
   <header class="post-header">
-    <h1 class="post-title"></h1>
+    <h1 class="post-title">Production Notes for Self</h1>
     <p class="post-meta">Jul 19, 2012 • Luciano Issoe</p>
   </header>
 
   <article class="post-content">
     Mongodb -- Production notes to self -- How we support 10 million hits a day at 100 ms avg time.<br /><br />Performance Tuning and Operation gotchas.<br /><br />-- blockdev (!!!)&nbsp; ( blockdev --setra 32 /dev/md0 )<br />single most important parameter. Adjust it to suit your needs<br /><br />&nbsp;&nbsp; Why??? =&gt; imagine that every time you need to query a document that is not yet on RAM you load a million times more documents in advance. So you freeze your reads while doing that and load this huge amount of data for never to use it.&nbsp; <br /><br />&nbsp;&nbsp; How to adjust it ??? =&gt; determine your average document size and the read pattern<br /><br /><br />A good guess should be a low number if your documents are small and the access pattern is random and larger otherwise.<br />A good number here will reflect on the resident memory, that in the long run should approach the maximum phisical memory&nbsp; available. I&nbsp; have dramatically improved our performance and maximum throughput changing the default read ahead from 8196 to 32 in my 8 disks RAID10 array.<br /><br />There´s a great post explaining it : http://www.kchodorow.com/blog/2012/05/10/thursday-5-diagnosing-high-readahead/<br /><br />-- vm.dirty_background_ratio=5<br />start background paging as early as possible <br /><br />-- vm.dirty_ratio=90<br />you should not reach this threshold, for it freezes the database.<br /><br />-- vm.swapiness=0<br />I don't want to ever swap, so I set it to 0.<br /><br />-- vm.page-cluster = 0<br />the size of the cart on which the vm carries the pages around in powers of 2, =&gt;&nbsp; 0 means 1, 1 means 2 and so on.&nbsp; <br /><br />Monitoring: MMS, Serverdensity, page faults and %lock.<br /><br />-- page faults =&gt; how much your mongodb is going to disk. <br />-- %lock =&gt; the percentage of time spent in lock =&gt; it represents how long a statement is waiting for something to be read or to be written. <br /><br /><br />Querying patterns:<br /><br />If you need to query for a large dataset, try to limit using an index, say "created_at:-1" and query for the most used documents.<br /><br />In my experience, the load of the documents can cost a lot in a fresh restarted database. So, if you are running a ReplicaSet ( and you must) and you must load a lot of documents at once, try to preload them before promoting it to primary, so the indexes of them all all already loaded into memory before it starts to be hammered. <br /><br /><br />Aggregation:<br /><br />If you need aggregation or a rare usage pattern, try to use a set of secondaries with another set of indexes... Or wait until new Aggregation Framework in&nbsp; 2.2 and see if its OK for you.<br /><br /><br /><br /><br /><br />
+
   </article>
 
 </div>
